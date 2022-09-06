@@ -1,7 +1,18 @@
-import { Body, Controller, HttpCode, Logger, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Logger,
+  Param,
+  Patch,
+  Post,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Posts } from '@prisma/client';
-import { CreatePostDto, CreatePostResponseDto } from './dto';
+import { CreatePostDto, CreatePostResponseDto, UpdatePostDto } from './dto';
 import { PostService } from './post.service';
 
 @ApiTags('Post API')
@@ -34,6 +45,37 @@ export class PostController {
     };
   }
 
-  // TODO: 비밀번호 일치하면 수정, 삭제
-  // TODO: 조회, 최신글 순서(게시글 로드)
+  @Patch(':id')
+  async updatePost(
+    @Param('id', ValidationPipe) id: string,
+    @Body() updatePostDto: UpdatePostDto,
+  ) {
+    const post = await this.postService.updatePost(id, updatePostDto);
+    this.logger.verbose('create post!');
+    return {
+      statusCode: 200,
+      message: '게시글을 수정했습니다.',
+      post,
+    };
+  }
+
+  @Delete(':id')
+  async deletePost() {
+    await this.postService.deletePost();
+    this.logger.verbose('create post!');
+    return {
+      statusCode: 200,
+      message: '게시글을 삭제했습니다.',
+    };
+  }
+
+  @Get()
+  async getPosts() {
+    await this.postService.getPosts();
+    this.logger.verbose('create post!');
+    return {
+      statusCode: 200,
+      message: '게시글을 조회했습니다.',
+    };
+  }
 }

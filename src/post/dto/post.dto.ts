@@ -1,4 +1,4 @@
-import { IsJSON, IsString, Matches } from 'class-validator';
+import { IsJSON, IsOptional, IsString, Matches } from 'class-validator';
 import { CommonResponseDto } from '../../commons/dto';
 
 export class CreatePostDto {
@@ -25,4 +25,17 @@ export class CreatePostResponseDto extends CommonResponseDto {
     content: string;
     weather: string;
   };
+}
+
+export class UpdatePostDto {
+  @IsString()
+  @IsOptional()
+  title: string;
+
+  @IsOptional()
+  @IsString()
+  content: string;
+
+  @IsString()
+  password: string;
 }
