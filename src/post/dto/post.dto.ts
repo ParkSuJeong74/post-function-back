@@ -1,0 +1,28 @@
+import { IsJSON, IsString, Matches } from 'class-validator';
+import { CommonResponseDto } from '../../commons/dto';
+
+export class CreatePostDto {
+  @IsString()
+  userId: string;
+
+  @IsString()
+  title: string;
+
+  @IsString()
+  content: string;
+
+  @IsString()
+  @Matches(/^(?=.*?[0-9]).{6,}$/, {
+    message: '비밀번호 양식에 맞게 작성하세요.',
+  })
+  password: string;
+}
+
+export class CreatePostResponseDto extends CommonResponseDto {
+  @IsJSON()
+  post: {
+    title: string;
+    content: string;
+    weather: string;
+  };
+}
