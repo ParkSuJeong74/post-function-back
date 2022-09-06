@@ -50,7 +50,19 @@ export class PostController {
     };
   }
 
+  @HttpCode(200)
   @Patch(':id')
+  @ApiOperation({
+    summary: '게시글 수정 API',
+    description:
+      '게시글 비밀번호의 일치 여부를 확인하고 제목이나 내용을 수정한다.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '게시글 수정 성공',
+    type: UpdatePostResponseDto,
+  })
+  @ApiBody({ type: UpdatePostDto })
   async updatePost(
     @Param('id', ValidationPipe) id: string,
     @Body() updatePostDto: UpdatePostDto,
