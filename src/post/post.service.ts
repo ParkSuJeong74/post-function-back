@@ -1,12 +1,12 @@
 import {
   ForbiddenException,
   Injectable,
-  NotFoundException,
+  NotFoundException
 } from '@nestjs/common';
 import { Posts } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreatePostDto, UpdatePostDto } from './dto';
+import { CreatePostDto, DeletePostDto, UpdatePostDto } from './dto';
 
 @Injectable()
 export class PostService {
@@ -53,7 +53,18 @@ export class PostService {
     }
   }
 
-  async deletePost() {}
+  async deletePost(deletePostDto: DeletePostDto) {
+    const { id, password } = deletePostDto;
+    await this.isPwMatching(id, password);
+
+    try {
+      await this.prisma.posts.delete({
+        where: { id },
+      });
+    } catch (err) {
+      throw new NotFoundException('게시글을 삭제하지 못했습니다.');
+    }
+  }
 
   async isPwMatching(id: string, password: string) {
     const post: Posts = await this.findPostById(id);

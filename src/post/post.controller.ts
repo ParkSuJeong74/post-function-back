@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -15,6 +16,8 @@ import { Posts } from '@prisma/client';
 import {
   CreatePostDto,
   CreatePostResponseDto,
+  DeletePostDto,
+  DeletePostResponseDto,
   UpdatePostDto,
   UpdatePostResponseDto,
 } from './dto';
@@ -76,9 +79,12 @@ export class PostController {
     };
   }
 
-  @Delete(':id')
-  async deletePost() {
-    await this.postService.deletePost();
+  @HttpCode(200)
+  @Delete()
+  async deletePost(
+    @Query() deletePostDto: DeletePostDto,
+  ): Promise<DeletePostResponseDto> {
+    await this.postService.deletePost(deletePostDto);
     this.logger.verbose('create post!');
     return {
       statusCode: 200,

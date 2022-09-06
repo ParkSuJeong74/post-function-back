@@ -47,3 +47,13 @@ export class UpdatePostResponseDto extends CommonResponseDto {
     content: string;
   };
 }
+
+export class DeletePostDto {
+  @IsString()
+  id: string;
+
+  @IsString()
+  password: string;
+}
+
+export class DeletePostResponseDto extends CommonResponseDto {}
