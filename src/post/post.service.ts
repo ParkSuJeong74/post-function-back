@@ -1,7 +1,7 @@
 import {
   ForbiddenException,
   Injectable,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import { Posts } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -75,6 +75,10 @@ export class PostService {
     }
   }
 
-  // TODO: 조회, 최신글 순서(게시글 로드)
-  async getPosts() {}
+  // TODO: 게시글 로드
+  async getPosts() {
+    return await this.prisma.posts.findMany({
+      orderBy: [{ createdAt: 'desc' }],
+    });
+  }
 }
