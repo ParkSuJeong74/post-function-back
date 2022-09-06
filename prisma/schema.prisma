@@ -10,10 +10,10 @@ datasource db {
 model User {
   id               String             @id @default(uuid())
   name             String             @db.VarChar(20) @unique()
-  Post             Post[]
+  Post             Posts[]
 }
 
-model Post {
+model Posts {
   id               String             @id @default(uuid())
   title            String             @db.VarChar(20) 
   content          String             @db.VarChar(200) 

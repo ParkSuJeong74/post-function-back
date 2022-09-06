@@ -1,5 +1,7 @@
 import { Body, Controller, HttpCode, Logger, Post } from '@nestjs/common';
-import { CreatePostDto } from './dto';
+import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Posts } from '@prisma/client';
+import { CreatePostDto, CreatePostResponseDto } from './dto';
 import { PostService } from './post.service';
 
 @Controller('post')
@@ -9,8 +11,20 @@ export class PostController {
 
   @HttpCode(201)
   @Post()
-  async createPost(@Body() createPostDto: CreatePostDto) {
-    const post = await this.postService.createPost(createPostDto);
+  @ApiOperation({
+    summary: '게시글 생성 API',
+    description: '게시글 제목, 내용, 비밀번호로 게시글을 생성한다.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: '게시글 생성 성공',
+    type: CreatePostResponseDto,
+  })
+  @ApiBody({ type: CreatePostDto })
+  async createPost(
+    @Body() createPostDto: CreatePostDto,
+  ): Promise<CreatePostResponseDto> {
+    const post: Posts = await this.postService.createPost(createPostDto);
     this.logger.verbose('create post!');
     return {
       statusCode: 201,
@@ -18,7 +32,7 @@ export class PostController {
       post: { title: post.title, content: post.content, weather: post.weather },
     };
   }
-  // TODO: create post(비밀번호 설정, 날씨)
+
   // TODO: 비밀번호 일치하면 수정, 삭제
   // TODO: 조회, 최신글 순서(게시글 로드)
 }

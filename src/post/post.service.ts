@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Post } from '@prisma/client';
+import { Posts } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto';
@@ -8,14 +8,14 @@ import { CreatePostDto } from './dto';
 export class PostService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createPost(createPostDto: CreatePostDto): Promise<Post> {
+  async createPost(createPostDto: CreatePostDto): Promise<Posts> {
     const { userId, title, content, password } = createPostDto;
     const hashedpassword = await bcrypt.hash(password, 10);
 
     // 날씨
 
     try {
-      return await this.prisma.post.create({
+      return await this.prisma.posts.create({
         data: { title, content, password: hashedpassword, user_id: userId },
       });
     } catch (err) {
