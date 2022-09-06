@@ -61,7 +61,7 @@ export class PostController {
     };
   }
 
-  @HttpCode(200)
+  @HttpCode(204)
   @Patch(':id')
   @ApiOperation({
     summary: '게시글 수정 API',
@@ -69,7 +69,7 @@ export class PostController {
       '게시글 비밀번호의 일치 여부를 확인하고 제목이나 내용을 수정한다.',
   })
   @ApiResponse({
-    status: 200,
+    status: 204,
     description: '게시글 수정 성공',
     type: UpdatePostResponseDto,
   })
@@ -79,23 +79,22 @@ export class PostController {
     @Param('id', ValidationPipe) id: string,
     @Body() updatePostDto: UpdatePostDto,
   ): Promise<UpdatePostResponseDto> {
-    const post: Posts = await this.postService.updatePost(id, updatePostDto);
+    await this.postService.updatePost(id, updatePostDto);
     this.logger.verbose('update post!');
     return {
       statusCode: 200,
       message: '게시글을 수정했습니다.',
-      post: { title: post.title, content: post.content },
     };
   }
 
-  @HttpCode(200)
+  @HttpCode(204)
   @Delete()
   @ApiOperation({
     summary: '게시글 삭제 API',
     description: '게시글 비밀번호의 일치 여부를 확인하고 게시글을 삭제한다.',
   })
   @ApiResponse({
-    status: 200,
+    status: 204,
     description: '게시글 삭제 성공',
     type: DeletePostResponseDto,
   })
