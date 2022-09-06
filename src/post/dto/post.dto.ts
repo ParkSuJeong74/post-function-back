@@ -52,6 +52,11 @@ export class DeletePostDto {
 
 export class DeletePostResponseDto extends CommonResponseDto {}
 
+export class GetPostsDto {
+  @IsString()
+  page: string;
+}
+
 export class GetPostsResponseDto extends CommonResponseDto {
   @IsJSON()
   posts: {

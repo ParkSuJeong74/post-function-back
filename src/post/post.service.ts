@@ -8,7 +8,12 @@ import { ConfigService } from '@nestjs/config';
 import { Posts } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreatePostDto, DeletePostDto, UpdatePostDto } from './dto';
+import {
+  CreatePostDto,
+  DeletePostDto,
+  GetPostsDto,
+  UpdatePostDto,
+} from './dto';
 
 @Injectable()
 export class PostService {
@@ -87,11 +92,13 @@ export class PostService {
     }
   }
 
-  // TODO: 게시글 로드
-  async getPosts() {
+  async getPosts(getPostsDto: GetPostsDto) {
+    const { page } = getPostsDto;
     try {
       const posts = await this.prisma.posts.findMany({
         orderBy: [{ createdAt: 'desc' }],
+        skip: (Number(page) - 1) * 5,
+        take: 5,
         select: {
           id: true,
           title: true,

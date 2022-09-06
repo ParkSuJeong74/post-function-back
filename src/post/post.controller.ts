@@ -25,6 +25,7 @@ import {
   CreatePostResponseDto,
   DeletePostDto,
   DeletePostResponseDto,
+  GetPostsDto,
   GetPostsResponseDto,
   UpdatePostDto,
   UpdatePostResponseDto,
@@ -124,16 +125,23 @@ export class PostController {
   @Get()
   @ApiOperation({
     summary: '게시글 조회 API',
-    description: '게시글을 최신글부터 조회한다.',
+    description: '게시글을 최신글부터 페이지별로 조회한다.',
   })
   @ApiResponse({
     status: 200,
     description: '게시글 조회 성공',
     type: GetPostsResponseDto,
   })
-  async getPosts(): Promise<GetPostsResponseDto> {
-    const posts = await this.postService.getPosts();
-    this.logger.verbose('create post!');
+  @ApiQuery({
+    name: 'page',
+    required: true,
+    description: '게시글 페이지(재로드 횟수)',
+  })
+  async getPosts(
+    @Query() getPostsDto: GetPostsDto,
+  ): Promise<GetPostsResponseDto> {
+    const posts = await this.postService.getPosts(getPostsDto);
+    this.logger.verbose('get posts!');
     return {
       statusCode: 200,
       message: '게시글을 조회했습니다.',
