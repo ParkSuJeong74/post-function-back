@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { validation } from './commons/utils';
+import config from './commons/utils/config';
 import { PostModule } from './post/post.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
@@ -17,6 +18,7 @@ import { UserModule } from './user/user.module';
           : '.env',
       isGlobal: true,
       validationSchema: validation,
+      load: [config],
     }),
     UserModule,
     PostModule,
