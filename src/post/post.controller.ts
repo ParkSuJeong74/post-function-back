@@ -11,7 +11,14 @@ import {
   Query,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Posts } from '@prisma/client';
 import {
   CreatePostDto,
@@ -65,13 +72,14 @@ export class PostController {
     description: '게시글 수정 성공',
     type: UpdatePostResponseDto,
   })
+  @ApiParam({ name: 'id', required: true, description: '게시글 아이디' })
   @ApiBody({ type: UpdatePostDto })
   async updatePost(
     @Param('id', ValidationPipe) id: string,
     @Body() updatePostDto: UpdatePostDto,
   ): Promise<UpdatePostResponseDto> {
     const post: Posts = await this.postService.updatePost(id, updatePostDto);
-    this.logger.verbose('create post!');
+    this.logger.verbose('update post!');
     return {
       statusCode: 200,
       message: '게시글을 수정했습니다.',
@@ -81,24 +89,46 @@ export class PostController {
 
   @HttpCode(200)
   @Delete()
+  @ApiOperation({
+    summary: '게시글 삭제 API',
+    description: '게시글 비밀번호의 일치 여부를 확인하고 게시글을 삭제한다.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '게시글 삭제 성공',
+    type: DeletePostResponseDto,
+  })
+  @ApiQuery({
+    name: 'id',
+    required: true,
+    description: '게시글 아이디',
+  })
+  @ApiQuery({
+    name: 'password',
+    required: true,
+    description: '게시글 비밀번호',
+  })
+  @ApiBody({ type: DeletePostDto })
   async deletePost(
     @Query() deletePostDto: DeletePostDto,
   ): Promise<DeletePostResponseDto> {
     await this.postService.deletePost(deletePostDto);
-    this.logger.verbose('create post!');
+    this.logger.verbose('delete post!');
     return {
       statusCode: 200,
       message: '게시글을 삭제했습니다.',
     };
   }
 
+  @HttpCode(200)
   @Get()
   async getPosts() {
-    await this.postService.getPosts();
+    const posts = await this.postService.getPosts();
     this.logger.verbose('create post!');
     return {
       statusCode: 200,
       message: '게시글을 조회했습니다.',
+      posts,
     };
   }
 }
