@@ -123,6 +123,15 @@ export class PostController {
 
   @HttpCode(200)
   @Get()
+  @ApiOperation({
+    summary: '게시글 조회 API',
+    description: '게시글을 최신글부터 조회한다.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '게시글 조회 성공',
+    type: GetPostsResponseDto,
+  })
   async getPosts(): Promise<GetPostsResponseDto> {
     const posts = await this.postService.getPosts();
     this.logger.verbose('create post!');
