@@ -3,8 +3,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export function setupSwagger(app: INestApplication): void {
   const options = new DocumentBuilder()
-    .setTitle('WonderingPill API Docs')
-    .setDescription('WonderingPill API description')
+    .setTitle('Post-Service API Docs')
+    .setDescription('Post-Service API description')
     .setVersion('1.0.0')
     .build();
 
