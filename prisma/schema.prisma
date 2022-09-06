@@ -6,3 +6,19 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id               String             @id @default(uuid())
+  name             String             @db.VarChar(20)
+  Post             Post[]
+}
+
+model Post {
+  id               String             @id @default(uuid())
+  title            String             @db.VarChar(20) 
+  content          String             @db.VarChar(200) 
+  password         String             @db.VarChar(100) 
+  weather          String?            @db.VarChar(10)
+  user_id          String
+  User             User               @relation(fields: [user_id], references: [id])
+}
