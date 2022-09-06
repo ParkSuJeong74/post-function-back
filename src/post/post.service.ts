@@ -29,10 +29,9 @@ export class PostService {
 
   async createPost(createPostDto: CreatePostDto): Promise<Posts> {
     const { userId, title, content, password } = createPostDto;
-    const hashedpassword = await bcrypt.hash(password, 10);
+    const hashedpassword: string = await bcrypt.hash(password, 10);
 
-    const weather = await this.getWeather();
-    console.log(weather);
+    const weather: string = await this.getWeather();
 
     try {
       return await this.prisma.posts.create({
@@ -106,7 +105,7 @@ export class PostService {
     }
   }
 
-  async getWeather() {
+  async getWeather(): Promise<string> {
     try {
       const result = await this.httpService
         .get(
