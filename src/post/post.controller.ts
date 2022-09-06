@@ -25,6 +25,7 @@ import {
   CreatePostResponseDto,
   DeletePostDto,
   DeletePostResponseDto,
+  GetPostsResponseDto,
   UpdatePostDto,
   UpdatePostResponseDto,
 } from './dto';
@@ -122,7 +123,7 @@ export class PostController {
 
   @HttpCode(200)
   @Get()
-  async getPosts() {
+  async getPosts(): Promise<GetPostsResponseDto> {
     const posts = await this.postService.getPosts();
     this.logger.verbose('create post!');
     return {

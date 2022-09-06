@@ -79,6 +79,12 @@ export class PostService {
   async getPosts() {
     return await this.prisma.posts.findMany({
       orderBy: [{ createdAt: 'desc' }],
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        createdAt: true,
+      },
     });
   }
 }
