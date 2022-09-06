@@ -39,3 +39,11 @@ export class UpdatePostDto {
   @IsString()
   password: string;
 }
+
+export class UpdatePostResponseDto extends CommonResponseDto {
+  @IsJSON()
+  post: {
+    title: string;
+    content: string;
+  };
+}

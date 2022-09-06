@@ -12,7 +12,12 @@ import {
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Posts } from '@prisma/client';
-import { CreatePostDto, CreatePostResponseDto, UpdatePostDto } from './dto';
+import {
+  CreatePostDto,
+  CreatePostResponseDto,
+  UpdatePostDto,
+  UpdatePostResponseDto,
+} from './dto';
 import { PostService } from './post.service';
 
 @ApiTags('Post API')
@@ -49,13 +54,13 @@ export class PostController {
   async updatePost(
     @Param('id', ValidationPipe) id: string,
     @Body() updatePostDto: UpdatePostDto,
-  ) {
-    const post = await this.postService.updatePost(id, updatePostDto);
+  ): Promise<UpdatePostResponseDto> {
+    const post: Posts = await this.postService.updatePost(id, updatePostDto);
     this.logger.verbose('create post!');
     return {
       statusCode: 200,
       message: '게시글을 수정했습니다.',
-      post,
+      post: { title: post.title, content: post.content },
     };
   }
 

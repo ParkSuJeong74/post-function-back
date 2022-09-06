@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Posts } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
@@ -7,6 +11,15 @@ import { CreatePostDto, UpdatePostDto } from './dto';
 @Injectable()
 export class PostService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async findPostById(id: string) {
+    try {
+      const post: Posts = await this.prisma.posts.findUnique({ where: { id } });
+      return post;
+    } catch (err) {
+      throw new NotFoundException('게시글을 조회하지 못했습니다.');
+    }
+  }
 
   async createPost(createPostDto: CreatePostDto): Promise<Posts> {
     const { userId, title, content, password } = createPostDto;
@@ -25,7 +38,7 @@ export class PostService {
 
   async updatePost(id: string, updatePostDto: UpdatePostDto): Promise<Posts> {
     const { title, content, password } = updatePostDto;
-    await this.isPwMatching(password);
+    await this.isPwMatching(id, password);
 
     try {
       return await this.prisma.posts.update({
@@ -42,8 +55,13 @@ export class PostService {
 
   async deletePost() {}
 
-  async isPwMatching(password: string) {
-    // TODO: 비밀번호 일치한지 확인
+  async isPwMatching(id: string, password: string) {
+    const post: Posts = await this.findPostById(id);
+    const isPwCorrect: boolean = await bcrypt.compare(password, post.password);
+
+    if (!isPwCorrect) {
+      throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
+    }
   }
 
   // TODO: 조회, 최신글 순서(게시글 로드)
