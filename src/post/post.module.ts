@@ -1,9 +1,14 @@
-import { Module } from '@nestjs/common';
-import { PostService } from './post.service';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { LoggerMiddleware } from '../commons/middlewares';
 import { PostController } from './post.controller';
+import { PostService } from './post.service';
 
 @Module({
   providers: [PostService],
-  controllers: [PostController]
+  controllers: [PostController],
 })
-export class PostModule {}
+export class PostModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('post');
+  }
+}
