@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { validation } from './commons/utils';
@@ -20,6 +21,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     PostModule,
     PrismaModule,
+    HttpModule,
   ],
 })
 export class AppModule {}

@@ -1,8 +1,10 @@
+import { HttpService } from '@nestjs/axios';
 import {
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Posts } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
@@ -10,7 +12,11 @@ import { CreatePostDto, DeletePostDto, UpdatePostDto } from './dto';
 
 @Injectable()
 export class PostService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async findPostById(id: string) {
     try {
@@ -25,11 +31,18 @@ export class PostService {
     const { userId, title, content, password } = createPostDto;
     const hashedpassword = await bcrypt.hash(password, 10);
 
-    // TODO: 날씨
+    const weather = await this.getWeather();
+    console.log(weather);
 
     try {
       return await this.prisma.posts.create({
-        data: { title, content, password: hashedpassword, user_id: userId },
+        data: {
+          title,
+          content,
+          password: hashedpassword,
+          user_id: userId,
+          weather,
+        },
       });
     } catch (err) {
       throw new NotFoundException('게시글을 생성하지 못했습니다.');
@@ -77,14 +90,35 @@ export class PostService {
 
   // TODO: 게시글 로드
   async getPosts() {
-    return await this.prisma.posts.findMany({
-      orderBy: [{ createdAt: 'desc' }],
-      select: {
-        id: true,
-        title: true,
-        content: true,
-        createdAt: true,
-      },
-    });
+    try {
+      const posts = await this.prisma.posts.findMany({
+        orderBy: [{ createdAt: 'desc' }],
+        select: {
+          id: true,
+          title: true,
+          content: true,
+          createdAt: true,
+        },
+      });
+      return posts;
+    } catch (err) {
+      throw new NotFoundException('게시글을 조회하지 못했습니다.');
+    }
+  }
+
+  async getWeather() {
+    try {
+      const result = await this.httpService
+        .get(
+          `${this.configService.get(
+            'WEATHER_DOMAIN',
+          )}/current.json?key=${this.configService.get('WEATHER_KEY')}&q=Seoul`,
+        )
+        .toPromise();
+
+      return result.data.current.condition.text;
+    } catch (err) {
+      throw new NotFoundException('현재 날씨를 로드하지 못했습니다.');
+    }
   }
 }

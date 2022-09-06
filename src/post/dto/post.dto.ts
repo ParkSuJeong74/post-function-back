@@ -40,13 +40,7 @@ export class UpdatePostDto {
   password: string;
 }
 
-export class UpdatePostResponseDto extends CommonResponseDto {
-  @IsJSON()
-  post: {
-    title: string;
-    content: string;
-  };
-}
+export class UpdatePostResponseDto extends CommonResponseDto {}
 
 export class DeletePostDto {
   @IsString()
