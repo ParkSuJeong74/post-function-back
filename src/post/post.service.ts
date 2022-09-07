@@ -97,8 +97,8 @@ export class PostService {
     try {
       const posts = await this.prisma.posts.findMany({
         orderBy: [{ createdAt: 'desc' }],
-        skip: (Number(page) - 1) * 5,
-        take: 5,
+        skip: (Number(page) - 1) * 20,
+        take: 20,
         select: {
           id: true,
           title: true,
