@@ -67,13 +67,12 @@
 
 ```shell
 $ git clone
-$ cd
+$ cd post-service-back
 ```
 
 @ParkSuJeong 에게 `*.env`를 요청해주세요!
 
 ```shell
-$ cd back
 $ npm install
 $ npm run start:dev
 ```
